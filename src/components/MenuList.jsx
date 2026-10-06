@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { foods } from "../data";
 import { useEffect } from "react";
+import { MyModal } from "./MyModal";
 
 export function MenuList({ selectedCateg }) {
 	const [menu, setMenu] = useState(foods);
+	const [isOpen, setIsOpen] = useState(false);
+	const [selectedFood, setSelectedFood] = useState(null);
 
 	useEffect(() => {
 		setMenu(() =>
@@ -12,6 +15,11 @@ export function MenuList({ selectedCateg }) {
 				: foods.filter(({ category }) => category == selectedCateg),
 		);
 	});
+
+	const toggle = ({ title, img }) => {
+		setIsOpen(!isOpen);
+		setSelectedFood({ title, img });
+	};
 
 	return (
 		<div className="flex flex-wrap gap-4">
@@ -25,6 +33,7 @@ export function MenuList({ selectedCateg }) {
 							className="w-full h-48 object-cover rounded-2xl"
 							src={"images/" + img}
 							alt={title}
+							onClick={() => toggle({ title, img })}
 						/>
 					</div>
 					<div className="flex-1">
@@ -36,6 +45,13 @@ export function MenuList({ selectedCateg }) {
 					</div>
 				</div>
 			))}
+			{isOpen && (
+				<MyModal
+					isOpen={isOpen}
+					setIsOpen={setIsOpen}
+					selectedFood={selectedFood}
+				/>
+			)}
 		</div>
 	);
 }
